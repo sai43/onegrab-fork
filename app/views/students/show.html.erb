@@ -1,28 +1,24 @@
-<div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
-  <h2 class="text-2xl font-semibold mb-6">Student Details</h2>
-
-  <div class="flex space-x-8">
-    <div class="w-32 h-32 rounded overflow-hidden bg-gray-100 flex items-center justify-center">
+<h1 class="text-3xl font-bold mb-8">Student Details</h1>  
+<div class="bg-white shadow-lg rounded-lg p-6">
+  <div class="flex items-center mb-6">
+    <div class="w-32 h-32 rounded-full overflow-hidden mr-6">
       <img src="<%= @student.image_url %>" alt="<%= @student.name %>" class="object-cover w-full h-full" />
     </div>
-
-    <div class="flex-1 space-y-3">
-      <p><strong>Name:</strong> <%= @student.name %></p>
-      <p><strong>Email:</strong> <%= @student.email %></p>
-      <p><strong>Phone:</strong> <%= @student.phone %></p>
-      <p><strong>Address:</strong> <%= @student.address.presence || 'N/A' %></p>
-      <p><strong>Gender:</strong> <%= @student.gender.capitalize %></p>
-      <p><strong>Date of Birth:</strong> <%= @student.dob.strftime("%B %d, %Y") %></p>
-      <p><strong>Enrollment Date:</strong> <%= @student.enrollment_date.present? ? @student.enrollment_date.strftime("%B %d, %Y") : 'N/A' %></p>
-      <p><strong>Status:</strong> <%= @student.status&.humanize || 'N/A' %></p>
-      <p><strong>Parent / Guardian Name:</strong> <%= @student.parent_guardian_name.presence || 'N/A' %></p>
-      <p><strong>Emergency Contact:</strong> <%= @student.emergency_contact.presence || 'N/A' %></p>
-      <p><strong>Progress Status:</strong> <%= @student.progress_status&.humanize || 'N/A' %></p>
+    <div>
+      <h2 class="text-xl font-semibold mb-2"><%= @student.name %></h2>
+      <p class="text-sm text-gray-700 mb-1"><%= @student.email %></p>
+      <p class="text-sm text-gray-700 mb-3"><%= @student.phone %></p>
+      <p class="text-xs text-gray-500 max-w-xs"><%= @student.address.presence || 'No address provided' %></p>
     </div>
   </div>
 
-  <div class="mt-6 flex space-x-4">
-    <%= link_to 'Edit Student', edit_student_path(@student), class: "bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition" %>
-    <%= link_to 'Back to List', students_path, class: "text-gray-600 hover:text-gray-900 self-center" %>
+  <div class="mb-6">
+    <h3 class="text-lg font-semibold mb-2">Details</h3>
+    <p class="text-sm text-gray-700 mb-1">Date of Birth: <%= @student.dob %></p>
   </div>
+</div>
+
+<div class="mt-8">
+  <%= link_to 'Edit Student', edit_student_path(@student), class: "inline-block bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 transition" %>
+  <%= link_to 'Back to Students', students_path, class: "inline-block bg-indigo-600 text-white px-6 py-3 rounded hover:bg-indigo-700 transition" %>
 </div>

@@ -1,70 +1,64 @@
 class StudentsController < ApplicationController
-  before_action :set_student, only: %i[ show edit update destroy ]
+  before_action :set_student, only: [:edit, :update, :destroy, :show]
 
-  # GET /students or /students.json
   def index
-    @pagy, @students = pagy(Student.order(created_at: :desc))
+    @pagy, @students = pagy(User.where(role: User.roles[:student]).order(created_at: :desc))
   end
 
-  # GET /students/1 or /students/1.json
-  def show
+  def new 
+    @student = User.new
   end
 
-  # GET /students/new
-  def new
-    @student = Student.new
+  def create
+    @student = User.new(student_params)
+    @student.role = User.roles[:student]
+    
+    if @student.save
+      redirect_to students_path, notice: 'Student was successfully created.'
+    else
+      render :new
+    end
   end
 
-  # GET /students/1/edit
   def edit
   end
 
-  # POST /students or /students.json
-  def create
-    @student = Student.new(student_params)
-
-    respond_to do |format|
-      if @student.save
-        format.html { redirect_to @student, notice: "Student was successfully created." }
-        format.json { render :show, status: :created, location: @student }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @student.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /students/1 or /students/1.json
   def update
-    respond_to do |format|
-      if @student.update(student_params)
-        format.html { redirect_to @student, notice: "Student was successfully updated." }
-        format.json { render :show, status: :ok, location: @student }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @student.errors, status: :unprocessable_entity }
-      end
+    if @student.update(student_params)
+      redirect_to students_path, notice: 'Student was successfully updated.'
+    else
+      render :edit
     end
   end
-
-  # DELETE /students/1 or /students/1.json
   def destroy
-    @student.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to students_path, status: :see_other, notice: "Student was successfully destroyed." }
-      format.json { head :no_content }
+    if @student.destroy
+      redirect_to students_path, notice: 'Student was successfully deleted.'
+    else
+      redirect_to students_path, alert: 'Failed to delete student.'
     end
+  end
+  def show
+    @enrollments = @student.enrollments.includes(:course).order(created_at: :desc)
+  end
+
+  def search
+    @pagy, @students = pagy(User.where(role: User.roles[:student]).
+                            where("name ILIKE :query OR email ILIKE :query", query: "%#{params[:query]}%").
+                            order(created_at: :desc))   
+
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_student
-      @student = Student.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def student_params
-      params.expect(student: [ :name, :email, :phone, :address ])
+  def set_student
+    @student = User.where(id: params[:id], role: User.roles[:student]).first
+    unless @student
+      redirect_to students_path, alert: 'Student not found.'
     end
+  end
+
+  def student_params
+    params.require(:user).permit(:name, :email, :phone, :address, :gender, :dob, :enrollment_date, :status, :parent_guardian_name)
+  end 
+
 end

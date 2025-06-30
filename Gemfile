@@ -76,3 +76,4 @@ gem 'jsonapi-serializer'
 gem 'imagekitio'
 gem 'pagy'
 gem 'dotenv-rails'
+gem 'whenever', require: false

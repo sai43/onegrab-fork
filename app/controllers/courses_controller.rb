@@ -57,6 +57,22 @@ class CoursesController < ApplicationController
     end
   end
 
+  def enroll
+    unless current_member&.subscribed?
+      redirect_to courses_path, alert: "You must be subscribed to enroll in courses."
+      return
+    end
+
+    course = Course.find(params[:id])
+    if current_member.courses.exists?(course.id)
+      redirect_to course, notice: "You are already enrolled in this course."
+    else
+      current_member.courses << course
+      redirect_to course, notice: "Successfully enrolled in #{course.title}!"
+    end
+  end
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_course

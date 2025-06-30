@@ -1,23 +1,43 @@
-<h1 class="text-3xl font-bold mb-8 text-center">Courses</h1>
+<h1 class="text-4xl font-bold mb-12 text-center text-gray-900">Courses</h1>
 
 <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
   <% @courses.each do |course| %>
-    <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-      <div class="p-4">
-        <h2 class="text-xl font-semibold mb-2 text-indigo-600"><%= course.title %></h2>
-        <p class="text-gray-600 mb-4"><%= truncate(course.description, length: 100) %></p>
+    <% presenter = CoursePresenter.new(course) %>
 
-        <div class="text-sm text-gray-500 mb-2">
-          <span class="font-medium">Category:</span> <%= course.category&.name || "Uncategorized" %>
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+      <% if presenter.thumbnail_url.present? %>
+        <img
+          src="<%= presenter.thumbnail_url %>"
+          alt="<%= presenter.title %> thumbnail"
+          class="w-full h-48 object-cover"
+        >
+      <% else %>
+        <div class="bg-gray-100 h-48 flex items-center justify-center text-gray-400 text-sm">
+          No Image
+        </div>
+      <% end %>
+
+      <div class="flex-1 flex flex-col p-5">
+        <h2 class="text-lg font-semibold text-gray-900 mb-2 hover:text-indigo-600 transition-colors duration-200">
+          <%= truncate(presenter.title, length: 50) %>
+        </h2>
+
+        <p class="text-gray-600 text-sm mb-4 flex-1">
+          <%= presenter.truncated_description %>
+        </p>
+
+        <div class="flex flex-wrap gap-2 mb-4 text-xs text-gray-500">
+          <span class="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 font-medium">
+            <%= presenter.category_name %>
+          </span>
+          <span class="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 font-medium">
+            Author: <%= presenter.author_name %>
+          </span>
         </div>
 
-        <div class="text-sm text-gray-500 mb-2">
-          <span class="font-medium">Author:</span> <%= course.author&.username || "Unknown" %>
-        </div>
-
-        <div class="flex justify-between items-center">
-          <%= link_to 'View Details', course_path(course), class: "text-indigo-600 hover:text-indigo-800 font-semibold" %>
-          <span class="text-sm font-semibold text-gray-700"><%= number_to_currency(course.price || 0) %></span>
+        <div class="mt-auto flex justify-between items-center pt-2 border-t border-gray-100">
+          <%= link_to 'View Details', course_path(course), class: "text-indigo-600 hover:text-indigo-800 font-semibold text-sm" %>
+          <span class="text-base font-bold text-gray-900"><%= presenter.formatted_price %></span>
         </div>
       </div>
     </div>

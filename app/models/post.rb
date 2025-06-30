@@ -4,7 +4,7 @@ class Post < ApplicationRecord
   validates :content, :author, :status, presence: true
   validates :published_at, presence: true, if: -> { published? }
 
-  enum :status, { draft: 0, published: 1 }
+  enum :status, { draft: 0, published: 1 }, default: :draft
 
   belongs_to :author, class_name: 'User'
 

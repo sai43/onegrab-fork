@@ -32,8 +32,10 @@
 
   <div>
     <%= form.label :status, class: "block text-sm font-medium text-gray-700" %>
-    <%= form.select :status, Post.statuses.keys.map { |k| [k.titleize, k] }, { include_blank: "Select status" }, class: "mt-1 block w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 #{'border-red-500' if post.errors[:status].any?}" %>
+    <%= form.select :status, Post.statuses.keys.map { |k| [k.titleize, k] }, { include_blank: "Select status" }, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2 focus:border-blue-500 focus:ring focus:ring-blue-200 #{'border-red-500' if post.errors[:status].any?}" %>
   </div>
+
+
 
   <div>
     <%= form.label :author_id, "Author", class: "block text-sm font-medium text-gray-700" %>

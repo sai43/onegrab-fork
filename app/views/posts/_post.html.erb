@@ -1,26 +1,28 @@
-<div id="<%= dom_id post %>" class="w-full sm:w-auto my-5 space-y-5">
+<% presenter = PostPresenter.new(post) %>
+
+<div id="<%= dom_id post %>" class="w-full sm:w-auto my-5 space-y-5 bg-white p-6 rounded-xl shadow border border-gray-100">
   <div>
     <strong class="block font-medium mb-1">Title:</strong>
-    <%= post.title %>
+    <%= presenter.title %>
   </div>
   <div>
     <strong class="block font-medium mb-1">Content:</strong>
-    <%= post.content %>
+    <%= presenter.content %>
   </div>
   <div>
     <strong class="block font-medium mb-1">Excerpt:</strong>
-    <%= post.excerpt %>
+    <%= presenter.excerpt %>
   </div>
   <div>
     <strong class="block font-medium mb-1">Published at:</strong>
-    <%= post.published_at %>
+    <%= presenter.published_at %>
   </div>
   <div>
     <strong class="block font-medium mb-1">Status:</strong>
-    <%= post.status %>
+    <%= presenter.status %>
   </div>
   <div>
     <strong class="block font-medium mb-1">Author:</strong>
-    <%= post.author_id %>
+    <%= presenter.author_name %>
   </div>
 </div>

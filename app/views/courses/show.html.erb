@@ -1,15 +1,37 @@
-<% content_for :title, "Showing course" %>
+<% presenter = CoursePresenter.new(@course) %>
 
-<div class="md:w-2/3 w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
+<div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 mt-10">
+  <h1 class="text-3xl font-bold text-gray-900 mb-6 text-center"><%= presenter.title %></h1>
+
+  <% if presenter.has_thumbnail? %>
+    <div class="mb-6">
+      <img src="<%= presenter.thumbnail_url %>" alt="Course thumbnail" class="w-full h-64 object-cover rounded-xl border border-gray-200 shadow-sm">
+    </div>
   <% end %>
 
-  <h1 class="font-bold text-4xl">Showing course</h1>
+  <div class="space-y-4 text-gray-800">
+    <p><strong>Description:</strong> <%= presenter.description %></p>
+    <p><strong>Short Description:</strong> <%= presenter.short_description %></p>
+    <p><strong>Price:</strong> <%= presenter.formatted_price %></p>
+    <p><strong>Category:</strong> <%= presenter.category_name %></p>
+    <p><strong>Level:</strong> <%= presenter.level %></p>
+    <p><strong>Published:</strong> <%= presenter.published_status %></p>
+    <p><strong>Published At:</strong> <%= presenter.published_at %></p>
+    <p><strong>Duration:</strong> <%= presenter.duration %></p>
+  </div>
 
-  <%= render @course %>
-
-  <%= link_to "Edit this course", edit_course_path(@course), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to courses", courses_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= button_to "Destroy this course", @course, method: :delete, form_class: "sm:inline-block mt-2 sm:mt-0 sm:ml-2", class: "w-full rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
+  <div class="flex flex-wrap gap-3 mt-8">
+      <% if current_user&.subscribed? %>
+        <% if current_user.courses.exists?(@course.id) %>
+          <p class="text-green-600 font-medium mt-4">You are already enrolled in this course.</p>
+        <% else %>
+          <%= button_to "Enroll Now", enroll_course_path(@course), method: :post, class: "inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-white font-semibold hover:bg-indigo-500 transition" %>
+        <% end %>
+      <% else %>
+        <p class="text-red-500 font-medium mt-4">You must be subscribed to enroll. <%= link_to "Subscribe now", pricing_path, class: "underline" %></p>
+      <% end %>
+    <%= link_to "Edit", edit_course_path(@course), class: "inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-500 transition" %>
+    <%= link_to "Back to Courses", courses_path, class: "inline-flex items-center justify-center rounded-lg bg-gray-100 px-4 py-2 text-gray-700 font-medium hover:bg-gray-200 transition" %>
+    <%= button_to "Delete", @course, method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-500 transition" %>
+  </div>
 </div>

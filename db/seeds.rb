@@ -88,23 +88,108 @@ students_data = [
 #   Student.create!(student_attrs)
 # end
 
-Post.create!(
-    [
-        {
-            title: "Getting Started with Ruby on Rails",
-            content: "Ruby on Rails is a powerful web development framework...",
-            excerpt: "An introductory guide to Ruby on Rails.",
-            published_at: 2.days.ago,
-            status: "published",
-            author: author
-        },
-        {
-            title: "Understanding ActiveRecord Associations",
-            content: "ActiveRecord associations simplify working with related models...",
-            excerpt: "Learn about the basics of ActiveRecord associations.",
-            published_at: 1.day.ago,
-            status: "published",
-            author: author
-        }
-    ]
-)
+# Post.create!(
+#     [
+#         {
+#             title: "Getting Started with Ruby on Rails",
+#             content: "Ruby on Rails is a powerful web development framework...",
+#             excerpt: "An introductory guide to Ruby on Rails.",
+#             published_at: 2.days.ago,
+#             status: "published",
+#             author: author
+#         },
+#         {
+#             title: "Understanding ActiveRecord Associations",
+#             content: "ActiveRecord associations simplify working with related models...",
+#             excerpt: "Learn about the basics of ActiveRecord associations.",
+#             published_at: 1.day.ago,
+#             status: "published",
+#             author: author
+#         }
+#     ]
+# )
+
+#===========Plans Seed Data===========
+
+puts "🌱 Seeding Plans..."
+
+plans = [
+  {
+    name: "Basic",
+    slug: "basic",
+    description: "Access to beginner-level courses. Perfect for starting your journey.",
+    price: 2000,
+    currency: "INR",
+    interval: "monthly",
+    interval_count: 1,
+    duration_days: 30,
+    active: true
+  },
+  {
+    name: "Pro",
+    slug: "pro",
+    description: "Access to all courses, including intermediate & advanced levels.",
+    price: 5000,
+    currency: "INR",
+    interval: "monthly",
+    interval_count: 1,
+    duration_days: 90,
+    active: true
+  },
+  {
+    name: "Premium",
+    slug: "premium",
+    description: "Full access to all content, premium resources, mentorship, and live sessions.",
+    price: 12000,
+    currency: "INR",
+    interval: "monthly",
+    interval_count: 1,
+    duration_days: 365,
+    active: true
+  }
+]
+
+# plans.each do |plan_data|
+#   next if Plan.exists?(slug: plan_data[:slug]) # Check by slug now
+
+#   Plan.create!(plan_data)
+#   puts "✅ Created plan: #{plan_data[:name]}"
+# end
+
+puts "✅ Plans seeding complete!"
+
+
+#=======================================
+
+subscriptions = [
+  {
+    user: User.find_by(email: "csai@cendyn.com"),
+    plan_name: "premium",
+    status: "pending",
+    payment_method: "cash"
+  }
+]
+
+puts "🌱 Seeding Subscriptions..."
+
+subscriptions.each do |sub_data|
+  plan = Plan.find_by(slug: sub_data[:plan_name])
+  next unless plan && sub_data[:user]
+
+  unless sub_data[:user].subscription.present?
+    sub_data[:user].create_subscription!(
+      plan: plan,
+      amount: plan.price,
+      currency: plan.currency,
+      status: sub_data[:status],
+      started_at: Time.current,
+      ends_at: Time.current + plan.duration_days.days,
+      payment_method: sub_data[:payment_method]
+    )
+    puts "✅ Created subscription for #{sub_data[:user].email} to #{plan.name}"
+  else
+    puts "⚠️ Subscription already exists for #{sub_data[:user].email}"
+  end
+end
+
+puts "✅ Subscriptions seeding complete!"
