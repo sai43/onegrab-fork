@@ -12,7 +12,7 @@
 
 programming = Category.find_or_create_by(name: 'Programming')
 web_dev = Category.find_or_create_by(name: 'Web Development')
-author = User.find_by(email: 'chsai.btech@gmail.com')
+author = User.find_by(email: ENV['AUTHOR_EMAIL'])
 
 courses = [
     {
@@ -111,7 +111,7 @@ students_data = [
 
 #===========Plans Seed Data===========
 
-puts "🌱 Seeding Plans..."
+# puts "🌱 Seeding Plans..."
 
 plans = [
   {
@@ -156,7 +156,7 @@ plans = [
 #   puts "✅ Created plan: #{plan_data[:name]}"
 # end
 
-puts "✅ Plans seeding complete!"
+# puts "✅ Plans seeding complete!"
 
 
 #=======================================
@@ -170,26 +170,35 @@ subscriptions = [
   }
 ]
 
-puts "🌱 Seeding Subscriptions..."
+# puts "🌱 Seeding Subscriptions..."
 
-subscriptions.each do |sub_data|
-  plan = Plan.find_by(slug: sub_data[:plan_name])
-  next unless plan && sub_data[:user]
+# subscriptions.each do |sub_data|
+#   plan = Plan.find_by(slug: sub_data[:plan_name])
+#   next unless plan && sub_data[:user]
 
-  unless sub_data[:user].subscription.present?
-    sub_data[:user].create_subscription!(
-      plan: plan,
-      amount: plan.price,
-      currency: plan.currency,
-      status: sub_data[:status],
-      started_at: Time.current,
-      ends_at: Time.current + plan.duration_days.days,
-      payment_method: sub_data[:payment_method]
-    )
-    puts "✅ Created subscription for #{sub_data[:user].email} to #{plan.name}"
-  else
-    puts "⚠️ Subscription already exists for #{sub_data[:user].email}"
-  end
-end
+#   unless sub_data[:user].subscription.present?
+#     sub_data[:user].create_subscription!(
+#       plan: plan,
+#       amount: plan.price,
+#       currency: plan.currency,
+#       status: sub_data[:status],
+#       started_at: Time.current,
+#       ends_at: Time.current + plan.duration_days.days,
+#       payment_method: sub_data[:payment_method]
+#     )
+#     puts "✅ Created subscription for #{sub_data[:user].email} to #{plan.name}"
+#   else
+#     puts "⚠️ Subscription already exists for #{sub_data[:user].email}"
+#   end
+# end
 
-puts "✅ Subscriptions seeding complete!"
+# puts "✅ Subscriptions seeding complete!"
+
+
+# Course
+#   ├── Section
+#         ├── Lesson
+#               ├── Topic
+
+require_relative './seeds/learning_c_programming'
+

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_30_031726) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_30_162324) do
   create_schema "auth"
   create_schema "extensions"
   create_schema "graphql"
@@ -114,7 +114,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_30_031726) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "author_id", null: false
+    t.string "slug"
+    t.string "status", default: "draft", null: false
     t.index ["author_id"], name: "index_courses_on_author_id"
+    t.index ["slug"], name: "index_courses_on_slug", unique: true
+    t.index ["status"], name: "index_courses_on_status"
   end
 
   create_table "enquiries", force: :cascade do |t|
@@ -128,8 +132,33 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_30_031726) do
   end
 
   create_table "enrollments", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "course_id", null: false
+    t.string "status", default: "active", null: false
+    t.integer "progress", default: 0
+    t.datetime "enrolled_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "completed_at"
+    t.datetime "canceled_at"
+    t.datetime "started_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "last_accessed_at"
+    t.string "enrollment_type", default: "standard", null: false
+    t.string "payment_status", default: "unpaid", null: false
+    t.decimal "amount_paid", precision: 10, scale: 2, default: "0.0"
+    t.string "currency", default: "INR", null: false
+    t.string "enrollment_source", default: "web", null: false
+    t.string "enrollment_code"
+    t.string "notes"
+    t.string "referral_code"
+    t.string "referral_source"
+    t.string "utm_source"
+    t.string "utm_medium"
+    t.string "utm_campaign"
+    t.string "utm_content"
+    t.string "utm_term"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_enrollments_on_course_id"
+    t.index ["user_id"], name: "index_enrollments_on_user_id"
   end
 
   create_table "jwt_denylists", force: :cascade do |t|
@@ -138,6 +167,36 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_30_031726) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["jti"], name: "index_jwt_denylists_on_jti"
+  end
+
+  create_table "lesson_progresses", force: :cascade do |t|
+    t.bigint "enrollment_id", null: false
+    t.bigint "lesson_id", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "started_at"
+    t.datetime "completed_at"
+    t.integer "progress", default: 0, null: false
+    t.text "notes"
+    t.integer "duration", default: 0, null: false
+    t.boolean "published", default: true, null: false
+    t.datetime "published_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["enrollment_id"], name: "index_lesson_progresses_on_enrollment_id"
+    t.index ["lesson_id"], name: "index_lesson_progresses_on_lesson_id"
+  end
+
+  create_table "lessons", force: :cascade do |t|
+    t.bigint "section_id", null: false
+    t.string "title", null: false
+    t.text "content"
+    t.integer "position", default: 0, null: false
+    t.boolean "published", default: true, null: false
+    t.datetime "published_at"
+    t.integer "duration", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["section_id"], name: "index_lessons_on_section_id"
   end
 
   create_table "plans", force: :cascade do |t|
@@ -165,6 +224,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_30_031726) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_posts_on_author_id"
+  end
+
+  create_table "sections", force: :cascade do |t|
+    t.bigint "course_id", null: false
+    t.string "title", null: false
+    t.integer "position", default: 0, null: false
+    t.text "description"
+    t.integer "duration", default: 0, null: false
+    t.boolean "published", default: true, null: false
+    t.datetime "published_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_sections_on_course_id"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
@@ -326,6 +398,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_30_031726) do
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
+  create_table "topics", force: :cascade do |t|
+    t.bigint "lesson_id", null: false
+    t.string "title", null: false
+    t.text "content"
+    t.string "video_url"
+    t.integer "position"
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lesson_id"], name: "index_topics_on_lesson_id"
+    t.index ["slug"], name: "index_topics_on_slug", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -367,7 +452,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_30_031726) do
   add_foreign_key "course_enrollments", "courses"
   add_foreign_key "course_enrollments", "students"
   add_foreign_key "courses", "users", column: "author_id"
+  add_foreign_key "enrollments", "courses"
+  add_foreign_key "enrollments", "users"
+  add_foreign_key "lesson_progresses", "enrollments"
+  add_foreign_key "lesson_progresses", "lessons"
+  add_foreign_key "lessons", "sections"
   add_foreign_key "posts", "users", column: "author_id"
+  add_foreign_key "sections", "courses"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
@@ -376,4 +467,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_30_031726) do
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "subscriptions", "plans"
   add_foreign_key "subscriptions", "users"
+  add_foreign_key "topics", "lessons"
 end

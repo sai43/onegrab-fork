@@ -2,7 +2,7 @@ module Api
   module V1
     class CoursesController < Api::ApiController
       def index
-        pagy, courses = pagy(Course.all)
+        pagy, courses = pagy(Course.published.includes(:category, :author).order(created_at: :desc), items: 10)
 
         render json: {
           courses: CourseSerializer.new(courses).serializable_hash,

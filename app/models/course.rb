@@ -1,6 +1,6 @@
 class Course < ApplicationRecord
-
   enum :level, { beginner: "Beginner", intermediate: "Intermediate", advanced: "Advanced" }
+  enum :status, { draft: "Draft", published: "Published", archived: "Archived" }, default: :draft
 
   validates :title, presence: true, uniqueness: true, length: { maximum: 255 }
   validates :description, presence: true
@@ -9,9 +9,38 @@ class Course < ApplicationRecord
   validates :level, inclusion: { in: levels.keys, message: "%{value} is not a valid level" }, allow_blank: true
   validates :duration_minutes, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
   validates :thumbnail_url, format: URI::regexp(%w[http https]), allow_blank: true
+  validates :slug, uniqueness: true
 
   belongs_to :category
   belongs_to :author, class_name: 'User'
-  has_many :enrollments
+  has_many :sections, dependent: :destroy
+  has_many :enrollments, dependent: :destroy
   has_many :users, through: :enrollments
+
+  scope :published, -> { where(published: true) }
+
+  before_create :generate_slug_if_blank
+
+  def self.search(query)
+    where("title ILIKE :query OR description ILIKE :query", query: "%#{query}%")
+  end
+
+  def self.featured
+    where(featured: true)
+  end
+
+  def self.recent
+    order(created_at: :desc).limit(10)
+  end
+
+  def total_duration
+    sections.sum(:duration_minutes)
+  end
+  private
+
+  def generate_slug_if_blank
+    if self.slug.blank?
+      self.slug = title.parameterize
+    end
+  end
 end

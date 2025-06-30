@@ -2,7 +2,7 @@ module Api
   module V1
     class EnrollmentsController < Api::ApiController
       def index
-        enrollments = current_user.enrollments.includes(:course)
+        enrollments = current_user.enrollments.active.includes(:course)
 
         render json: EnrollmentSerializer.new(enrollments, include: [:course]).serializable_hash, status: :ok
       end
@@ -68,6 +68,29 @@ module Api
         else
           render json: { error: "Failed to create enrollments." }, status: :unprocessable_entity
         end
+      end
+
+      def progress
+        enrollment = current_user.enrollments.find(params[:id])
+
+        total = enrollment.lesson_progresses.count
+        completed = enrollment.lesson_progresses.completed.count
+        percentage = total.positive? ? ((completed.to_f / total) * 100).round : 0
+
+        lessons = enrollment.lesson_progresses.includes(:lesson).map do |lp|
+          {
+            id: lp.lesson.id,
+            title: lp.lesson.title,
+            status: lp.status
+          }
+        end
+
+        render json: {
+          total_lessons: total,
+          completed_lessons: completed,
+          percentage: percentage,
+          lessons: lessons
+        }, status: :ok
       end
     end
   end
