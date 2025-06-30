@@ -14,6 +14,7 @@ course.duration_minutes = 1200
 course.thumbnail_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/C_Programming_Language.svg/926px-C_Programming_Language.svg.png"
 course.category = category
 course.author = author
+course.published = true
 
 course.save!
 
