@@ -1,6 +1,8 @@
 module Api
   module V1
     class CoursesController < Api::ApiController
+      skip_before_action :authenticate_user!, only: [:index, :show]
+
       def index
         pagy, courses = pagy(Course.published.includes(:category, :author).order(created_at: :desc), items: 10)
 
