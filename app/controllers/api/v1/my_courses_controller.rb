@@ -9,12 +9,17 @@ module Api
       end
 
       def show
-        course = Course.find(params[:id])
-        unless current_user.courses.include?(course)
-          return render json: { error: "Not enrolled in this course." }, status: :forbidden
+        course = Course.find_by(slug: params[:id])
+
+        # Check enrollment for current_user
+        enrollment = current_user.enrollments.find_by(course_id: course.id)
+
+        unless enrollment
+          render json: { error: "You are not enrolled in this course" }, status: :forbidden
+          return
         end
 
-        render json: CourseSerializer.new(course, include: [:sections, :sections_lessons]).serializable_hash
+        render json: CourseSerializer.new(course, include: [:sections, :'sections.lessons', :'sections.lessons.topics'])
       end
     end
   end
