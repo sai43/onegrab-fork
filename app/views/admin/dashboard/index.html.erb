@@ -38,17 +38,45 @@
     <%= pie_chart @plan_earnings_data, height: "250px", library: { colors: ["#6366f1", "#10b981", "#f59e0b", "#ef4444", "#3b82f6"] } %>
   </div>
 
-  <div class="bg-white shadow rounded-lg p-5">
-    <h3 class="text-lg font-semibold mb-3">Top Courses by Enrollments</h3>
-    <ul>
-      <% @top_courses.each do |course| %>
-        <li class="mb-2">
-          <strong><%= course.title %></strong>
-          (<%= course.enrollments.count %> enrollments)
-        </li>
-      <% end %>
-    </ul>
-  </div>
+<div class="bg-white shadow rounded-lg p-5 mb-8">
+  <h3 class="text-lg font-semibold mb-3">Earnings vs Expenses & Net Profit</h3>
+  <%= column_chart @profit_chart_data, height: "300px", library: { colors: ["#10b981", "#ef4444", "#f59e0b"] } %>
+</div>
+
+
+<div class="bg-white shadow rounded-lg p-5 mb-8">
+  <h3 class="text-lg font-semibold mb-3">Churn & Retention (Last 6 Months)</h3>
+  <%= line_chart [
+      { name: "Retention", data: @retention_data },
+      { name: "Churn", data: @churn_data }
+    ],
+    height: "300px",
+    library: { colors: ["#10b981", "#ef4444"] }
+  %>
+</div>
+
+<div class="bg-white shadow rounded-lg p-5 mb-8">
+  <h3 class="text-lg font-semibold mb-3">Course Completion Funnel</h3>
+  <%= column_chart @funnel_data, height: "300px", library: { colors: ["#6366f1"] } %>
+</div>
+
+
+<div class="bg-white shadow rounded-lg p-5">
+  <h3 class="text-lg font-semibold mb-3">Top Courses by Enrollments</h3>
+  <ul>
+    <% @top_courses.each do |course| %>
+      <% average_rating = course.comments.approved.where(commentable_type: "Course").average(:rating)&.round(1) %>
+      <li class="mb-3">
+        <strong><%= course.title %></strong>
+        (<%= course.enrollments.count %> enrollments)
+        <% if average_rating.present? %>
+          - ⭐ <%= average_rating %>/5
+        <% else %>
+          - No ratings yet
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
