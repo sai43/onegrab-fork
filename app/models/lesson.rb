@@ -1,8 +1,11 @@
 class Lesson < ApplicationRecord
   belongs_to :section
   has_many :topics, dependent: :destroy
+  accepts_nested_attributes_for :topics, allow_destroy: true
+
   has_many :lesson_progresses, dependent: :destroy
   has_many :users, through: :lesson_progresses
+  has_many :comments, as: :commentable, dependent: :destroy
 
   validates :title, presence: true
   validates :position, numericality: { only_integer: true, greater_than: 0 }

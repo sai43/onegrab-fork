@@ -72,7 +72,7 @@ Rails.application.routes.draw do
   # This file is part of OneGrab.
   # OneGrab is an open-source project for managing online courses and subscriptions.
   # For more information, visit: https://onegrab.dev
-  # Admin routes
+
   resources :courses do
     member do
       post :enroll
@@ -91,6 +91,30 @@ Rails.application.routes.draw do
   resources :enquiries, only: [:index, :show]
   resources :students
   get "/up", to: "health#up"
+
+
+  #Admin namespace
+  namespace :admin do
+    get 'dashboard', to: 'dashboard#index', as: :dashboard
+    resources :courses do
+      resources :sections do
+        resources :lessons do
+          resources :topics
+        end
+      end
+    end
+    resources :comments, only: [:index, :destroy] do
+      collection do
+        get :pending
+        get :approved
+      end
+
+      member do
+        patch :approve
+        patch :hide
+      end
+    end    
+  end
 
   root "home#index"
 end

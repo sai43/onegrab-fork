@@ -1,0 +1,27 @@
+<h1><%= @course.title %></h1>
+
+<p><%= @course.description %></p>
+
+<%= link_to "Edit", edit_admin_course_path(@course), class: "btn btn-primary" %>
+<%= link_to "Back", admin_courses_path, class: "btn btn-secondary" %>
+
+<h3>Sections</h3>
+<ul>
+  <% @course.sections.each do |section| %>
+    <li>
+      <strong><%= section.title %></strong> — <%= section.description %>
+      <ul>
+        <% section.lessons.each do |lesson| %>
+          <li>
+            <strong><%= lesson.title %></strong> — <%= lesson.content %>
+            <ul>
+              <% lesson.topics.each do |topic| %>
+                <li><%= topic.title %> — <%= topic.slug %></li>
+              <% end %>
+            </ul>
+          </li>
+        <% end %>
+      </ul>
+    </li>
+  <% end %>
+</ul>

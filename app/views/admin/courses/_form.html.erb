@@ -1,0 +1,72 @@
+<%= form_with(model: [:admin, @course], local: true) do |f| %>
+  <%= f.label :title %>
+  <%= f.text_field :title %>
+
+  <%= f.label :description %>
+  <%= f.text_area :description, rows: 4 %>
+
+  <%= f.label :short_description %>
+  <%= f.text_area :short_description, rows: 2 %>
+
+  <%= f.label :price %>
+  <%= f.number_field :price %>
+
+  <%= f.label :thumbnail_url %>
+  <%= f.text_field :thumbnail_url %>
+
+  <%= f.label :slug %>
+  <%= f.text_field :slug %>
+
+  <%= f.label :published %>
+  <%= f.check_box :published %>
+
+  <h3>Sections</h3>
+  <%= f.fields_for :sections do |sf| %>
+    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+      <%= sf.label :title %>
+      <%= sf.text_field :title %>
+
+      <%= sf.label :description %>
+      <%= sf.text_area :description, rows: 3 %>
+
+      <h4>Lessons</h4>
+      <%= sf.fields_for :lessons do |lf| %>
+        <div style="border: 1px solid #ddd; padding: 8px; margin-bottom: 8px;">
+          <%= lf.label :title %>
+          <%= lf.text_field :title %>
+
+          <%= lf.label :content %>
+          <%= lf.text_area :content, rows: 3 %>
+
+          <%= lf.label :duration %>
+          <%= lf.number_field :duration %>
+
+          <h5>Topics</h5>
+          <%= lf.fields_for :topics do |tf| %>
+            <div style="border: 1px solid #eee; padding: 6px; margin-bottom: 6px;">
+              <%= tf.label :title %>
+              <%= tf.text_field :title %>
+
+              <%= tf.label :slug %>
+              <%= tf.text_field :slug %>
+
+              <%= tf.label :content %>
+              <%= tf.text_area :content, rows: 2 %>
+
+              <%= tf.label :notes %>
+              <%= tf.text_area :notes, rows: 5, placeholder: "Supports Markdown & code blocks" %>
+
+              <%= tf.label :video_url %>
+              <%= tf.text_field :video_url %>
+
+              <%= tf.label :position %>
+              <%= tf.number_field :position %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= f.submit %>
+<% end %>

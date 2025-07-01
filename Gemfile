@@ -77,3 +77,5 @@ gem 'imagekitio'
 gem 'pagy'
 gem 'dotenv-rails'
 gem 'whenever', require: false
+gem "chartkick"
+gem "groupdate"
