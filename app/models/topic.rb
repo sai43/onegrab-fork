@@ -9,4 +9,7 @@ class Topic < ApplicationRecord
   
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :topic_progresses, dependent: :destroy
+
+  has_rich_text :notes
+  has_rich_text :content
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_30_162324) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_01_202253) do
   create_schema "auth"
   create_schema "extensions"
   create_schema "graphql"
@@ -91,6 +91,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_30_162324) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "comments", force: :cascade do |t|
+    t.string "commentable_type", null: false
+    t.bigint "commentable_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "rating"
+    t.text "content"
+    t.string "status", default: "pending"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["commentable_type", "commentable_id"], name: "index_comments_on_commentable"
+    t.index ["status"], name: "index_comments_on_status"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
   create_table "course_enrollments", force: :cascade do |t|
     t.bigint "student_id", null: false
     t.bigint "course_id", null: false
@@ -159,6 +173,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_30_162324) do
     t.datetime "updated_at", null: false
     t.index ["course_id"], name: "index_enrollments_on_course_id"
     t.index ["user_id"], name: "index_enrollments_on_user_id"
+  end
+
+  create_table "feedbacks", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "course_id", null: false
+    t.integer "rating"
+    t.text "comment"
+    t.string "status", default: "pending"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_feedbacks_on_course_id"
+    t.index ["status"], name: "index_feedbacks_on_status"
+    t.index ["user_id"], name: "index_feedbacks_on_user_id"
   end
 
   create_table "jwt_denylists", force: :cascade do |t|
@@ -398,6 +425,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_30_162324) do
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
+  create_table "topic_progresses", force: :cascade do |t|
+    t.bigint "enrollment_id", null: false
+    t.bigint "lesson_id", null: false
+    t.bigint "topic_id", null: false
+    t.boolean "completed", default: false, null: false
+    t.datetime "started_at"
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["enrollment_id", "topic_id"], name: "index_topic_progresses_on_enrollment_id_and_topic_id", unique: true
+    t.index ["enrollment_id"], name: "index_topic_progresses_on_enrollment_id"
+    t.index ["lesson_id"], name: "index_topic_progresses_on_lesson_id"
+    t.index ["topic_id"], name: "index_topic_progresses_on_topic_id"
+  end
+
   create_table "topics", force: :cascade do |t|
     t.bigint "lesson_id", null: false
     t.string "title", null: false
@@ -407,6 +449,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_30_162324) do
     t.string "slug", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "notes"
     t.index ["lesson_id"], name: "index_topics_on_lesson_id"
     t.index ["slug"], name: "index_topics_on_slug", unique: true
   end
@@ -449,11 +492,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_30_162324) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "blogs", "users", column: "author_id"
+  add_foreign_key "comments", "users"
   add_foreign_key "course_enrollments", "courses"
   add_foreign_key "course_enrollments", "students"
   add_foreign_key "courses", "users", column: "author_id"
   add_foreign_key "enrollments", "courses"
   add_foreign_key "enrollments", "users"
+  add_foreign_key "feedbacks", "courses"
+  add_foreign_key "feedbacks", "users"
   add_foreign_key "lesson_progresses", "enrollments"
   add_foreign_key "lesson_progresses", "lessons"
   add_foreign_key "lessons", "sections"
@@ -467,5 +513,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_30_162324) do
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "subscriptions", "plans"
   add_foreign_key "subscriptions", "users"
+  add_foreign_key "topic_progresses", "enrollments"
+  add_foreign_key "topic_progresses", "lessons"
+  add_foreign_key "topic_progresses", "topics"
   add_foreign_key "topics", "lessons"
 end

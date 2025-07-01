@@ -44,7 +44,7 @@ module Admin
     end
 
     def topic_params
-      params.require(:topic).permit(:title, :content, :video_url, :position, :slug)
+      params.require(:topic).permit(:title, :video_url, :position, :slug, :content, :notes)
     end
   end
 end

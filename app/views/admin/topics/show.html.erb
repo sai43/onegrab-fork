@@ -1,9 +1,27 @@
 <h1 class="text-2xl font-bold mb-4"><%= @topic.title %></h1>
-<p class="text-gray-600 mb-4"><%= @topic.content %></p>
+
+<% if @topic.slug.present? %>
+  <p class="text-sm text-gray-500 mb-2"><strong>Slug:</strong> <%= @topic.slug %></p>
+<% end %>
+
+<% if @topic.position.present? %>
+  <p class="text-sm text-gray-500 mb-2"><strong>Position:</strong> <%= @topic.position %></p>
+<% end %>
 
 <% if @topic.video_url.present? %>
   <div class="mb-6">
     <iframe src="<%= @topic.video_url %>" class="w-full h-64 rounded" allowfullscreen></iframe>
+  </div>
+<% end %>
+
+<div class="prose mb-6">
+  <%= @topic.content %>
+</div>
+
+<% if @topic.notes.present? %>
+  <h2 class="text-lg font-semibold mb-2">Notes</h2>
+  <div class="prose mb-6">
+    <%= @topic.notes %>
   </div>
 <% end %>
 

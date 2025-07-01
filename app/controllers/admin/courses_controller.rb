@@ -3,7 +3,7 @@ module Admin
     before_action :set_course, only: %i[show edit update destroy]
 
     def index
-      @courses = Course.order(created_at: :desc)
+      @courses = Course.recent.published
     end
 
     def show; end

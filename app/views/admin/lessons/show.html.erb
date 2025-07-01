@@ -13,7 +13,7 @@
   <% @lesson.topics.each do |topic| %>
     <li class="border p-3 rounded shadow bg-white">
       <strong><%= topic.title %></strong>
-      <p class="text-sm text-gray-500"><%= truncate(topic.content, length: 80) %></p>
+      <p class="text-sm text-gray-500"><%= truncate(topic.content.to_plain_text, length: 80) %></p>
       <%= link_to "View", admin_topic_path(topic), class: "text-indigo-600 hover:underline" %>
     </li>
   <% end %>
