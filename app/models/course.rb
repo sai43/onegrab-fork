@@ -16,7 +16,7 @@ class Course < ApplicationRecord
   has_many :enrollments, dependent: :destroy
   has_many :users, through: :enrollments
   has_many :sections, dependent: :destroy
-  accepts_nested_attributes_for :sections, allow_destroy: true
+  # accepts_nested_attributes_for :sections, allow_destroy: true
   has_many :comments, as: :commentable, dependent: :destroy
 
   scope :published, -> { where(published: true) }

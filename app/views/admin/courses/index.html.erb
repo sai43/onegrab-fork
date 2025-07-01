@@ -1,13 +1,28 @@
-<h1>All Courses</h1>
+<h1 class="text-2xl font-bold mb-6">Courses</h1>
 
-<%= link_to "New Course", new_admin_course_path, class: "btn btn-primary mb-4" %>
+<%= link_to "New Course", new_admin_course_path, class: "inline-block bg-indigo-600 text-white px-4 py-2 rounded mb-4 hover:bg-indigo-700" %>
 
-<ul>
-  <% @courses.each do |course| %>
-    <li>
-      <%= link_to course.title, admin_course_path(course) %>
-      (<%= link_to "Edit", edit_admin_course_path(course) %> |
-      <%= link_to "Delete", admin_course_path(course), method: :delete, data: { confirm: "Are you sure?" } %>)
-    </li>
-  <% end %>
-</ul>
+<div class="bg-white shadow rounded">
+  <table class="min-w-full text-sm">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="p-3 text-left">Title</th>
+        <th class="p-3 text-left">Published</th>
+        <th class="p-3 text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @courses.each do |course| %>
+        <tr class="border-b">
+          <td class="p-3"><%= course.title %></td>
+          <td class="p-3"><%= course.published ? "Yes" : "No" %></td>
+          <td class="p-3 space-x-2">
+            <%= link_to "Show", admin_course_path(course), class: "text-blue-600 hover:underline" %>
+            <%= link_to "Edit", edit_admin_course_path(course), class: "text-green-600 hover:underline" %>
+            <%= link_to "Delete", admin_course_path(course), method: :delete, data: { confirm: "Are you sure?" }, class: "text-red-600 hover:underline" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

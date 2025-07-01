@@ -1,7 +1,7 @@
 class Section < ApplicationRecord
   belongs_to :course
   has_many :lessons, dependent: :destroy
-  accepts_nested_attributes_for :lessons, allow_destroy: true
+  # accepts_nested_attributes_for :lessons, allow_destroy: true
 
   validates :title, presence: true
   validates :duration, presence: true, numericality: { only_integer: true, greater_than: 0 }  

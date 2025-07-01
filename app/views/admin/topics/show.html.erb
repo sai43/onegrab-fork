@@ -1,0 +1,13 @@
+<h1 class="text-2xl font-bold mb-4"><%= @topic.title %></h1>
+<p class="text-gray-600 mb-4"><%= @topic.content %></p>
+
+<% if @topic.video_url.present? %>
+  <div class="mb-6">
+    <iframe src="<%= @topic.video_url %>" class="w-full h-64 rounded" allowfullscreen></iframe>
+  </div>
+<% end %>
+
+<div class="flex space-x-3">
+  <%= link_to "Edit Topic", edit_admin_topic_path(@topic), class: "bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700" %>
+  <%= link_to "Back to Lesson", admin_lesson_path(@topic.lesson), class: "bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400" %>
+</div>

@@ -9,5 +9,4 @@ class Topic < ApplicationRecord
   
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :topic_progresses, dependent: :destroy
-  accepts_nested_attributes_for :topics, allow_destroy: true
 end

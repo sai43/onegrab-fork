@@ -1,0 +1,20 @@
+<h1 class="text-2xl font-bold mb-4"><%= @lesson.title %></h1>
+<p class="text-gray-600 mb-6"><%= @lesson.content %></p>
+
+<div class="flex space-x-3 mb-4">
+  <%= link_to "Edit Lesson", edit_admin_lesson_path(@lesson), class: "bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700" %>
+  <%= link_to "Back to Section", admin_section_path(@lesson.section), class: "bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400" %>
+</div>
+
+<h3 class="text-lg font-semibold mb-3">Topics</h3>
+<%= link_to "Add Topic", new_admin_lesson_topic_path(@lesson), class: "inline-block bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 mb-2" %>
+
+<ul class="space-y-2">
+  <% @lesson.topics.each do |topic| %>
+    <li class="border p-3 rounded shadow bg-white">
+      <strong><%= topic.title %></strong>
+      <p class="text-sm text-gray-500"><%= truncate(topic.content, length: 80) %></p>
+      <%= link_to "View", admin_topic_path(topic), class: "text-indigo-600 hover:underline" %>
+    </li>
+  <% end %>
+</ul>

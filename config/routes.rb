@@ -5,8 +5,8 @@ Rails.application.routes.draw do
   # For more information, visit: https://onegrab.dev  
   # Author: Saich
   # License: MIT License
+  
   # API routes
-
   namespace :api do
     namespace :v1 do
       devise_for :users,
@@ -68,11 +68,7 @@ Rails.application.routes.draw do
     end
   end
 
-
-  # This file is part of OneGrab.
-  # OneGrab is an open-source project for managing online courses and subscriptions.
-  # For more information, visit: https://onegrab.dev
-
+  # Web routes
   resources :courses do
     member do
       post :enroll
@@ -96,13 +92,27 @@ Rails.application.routes.draw do
   #Admin namespace
   namespace :admin do
     get 'dashboard', to: 'dashboard#index', as: :dashboard
-    resources :courses do
-      resources :sections do
-        resources :lessons do
-          resources :topics
-        end
-      end
+
+    # resources :courses, shallow: true do
+    #   resources :sections, shallow: true do
+    #     resources :lessons, shallow: true do
+    #       resources :topics
+    #     end
+    #   end
+    # end
+
+    resources :courses, shallow: true do
+      resources :sections
     end
+
+    resources :sections, shallow: true do
+      resources :lessons
+    end
+
+    resources :lessons, shallow: true do
+      resources :topics
+    end   
+
     resources :comments, only: [:index, :destroy] do
       collection do
         get :pending
