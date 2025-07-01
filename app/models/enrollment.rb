@@ -2,6 +2,7 @@ class Enrollment < ApplicationRecord
   belongs_to :user
   belongs_to :course
   has_many :lesson_progresses, dependent: :destroy
+  has_many :topic_progresses, dependent: :destroy
 
   enum :status, { pending: 0, active: 1, completed: 2, canceled: 3 }, default: :active
   validates :status, inclusion: { in: statuses.keys }

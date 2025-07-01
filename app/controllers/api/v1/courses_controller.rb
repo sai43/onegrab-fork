@@ -6,10 +6,7 @@ module Api
       def index
         pagy, courses = pagy(Course.published.includes(:category, :author).order(created_at: :desc), items: 10)
 
-        render json: {
-          courses: CourseSerializer.new(courses).serializable_hash,
-          pagy: pagy_metadata(pagy)
-        }
+        render json: { courses: CourseSerializer.new(courses ).serializable_hash, pagy: pagy_metadata(pagy)}
       end
 
       def enroll
@@ -65,7 +62,7 @@ module Api
           render json: { error: "Course not found." }, status: :not_found and return
         end
 
-        render json: { course: CourseSerializer.new(course).serializable_hash }, status: :ok
+        render json: { course: CourseSerializer.new(course, scope: current_user).serializable_hash }, status: :ok
       end
 
       private

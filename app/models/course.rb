@@ -36,6 +36,14 @@ class Course < ApplicationRecord
   def total_duration
     sections.sum(:duration_minutes)
   end
+
+  def progress_for_enrollment(enrollment)
+    section_progresses = sections.map { |section| section.progress_for_enrollment(enrollment) }
+    return 0 if section_progresses.empty?
+
+    (section_progresses.sum / section_progresses.size.to_f).round
+  end
+  
   private
 
   def generate_slug_if_blank
