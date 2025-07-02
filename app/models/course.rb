@@ -25,8 +25,8 @@ class Course < ApplicationRecord
   scope :by_level, ->(level) { where(level: level) if level.present? }
   scope :by_author, ->(author_id) { where(author_id: author_id) if author_id.present? }
 
-  has_rich_text :description
-  has_rich_text :short_description
+  # has_rich_text :description
+  # has_rich_text :short_description
 
   # Generate slug from title if not provided
   before_create :generate_slug_if_blank

@@ -3,9 +3,8 @@ module Api
     class MyCoursesController < Api::ApiController
 
       def index
-        enrollments = current_user.enrollments.active.includes(course: { sections: { lessons: :topics } })
-
-        render json: EnrollmentSerializer.new(enrollments, include: ['course', 'course.sections', 'course.sections.lessons', 'course.sections.lessons.topics']).serializable_hash
+        enrollments = current_user.enrollments.active.includes(:course)
+        render json: EnrollmentSerializer.new(enrollments).serializable_hash
       end
 
       def show

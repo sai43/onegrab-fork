@@ -4,7 +4,7 @@ module Api
       skip_before_action :authenticate_user!, only: [:index, :show]
 
       def index
-        pagy, courses = pagy(Course.published.includes(:category, :author).order(created_at: :desc), items: 10)
+        pagy, courses = pagy(Course.published.includes(:category, :author).order(created_at: :desc), limit: (params[:limit] || 8))
 
         render json: { courses: CourseSerializer.new(courses ).serializable_hash, pagy: pagy_metadata(pagy)}
       end

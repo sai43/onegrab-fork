@@ -80,3 +80,4 @@ gem 'whenever', require: false
 gem "chartkick"
 gem "groupdate"
 gem "redcarpet"
+gem 'reverse_markdown'
