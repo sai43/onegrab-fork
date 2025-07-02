@@ -1,24 +1,23 @@
 module Api
   module V1
     class CourseSectionsController < Api::ApiController
-      before_action :set_course
-      before_action :set_section
 
       def show
-        render json: SectionSerializer.new(@section, include: [:lessons, :'lessons.topics']).serializable_hash
-      end
+        section = Section.includes(lessons: :topics).find(params[:id])
+        course = section.course
 
-      private
-
-      def set_course
-        @course = Course.find(params[:my_course_id])
-        unless current_user.courses.include?(@course)
-          render json: { error: "Not enrolled in this course." }, status: :forbidden
+        enrollment = current_user.enrollments.find_by(course_id: course.id)
+        unless enrollment
+          render json: { error: "You are not enrolled in this course" }, status: :forbidden
+          return
         end
-      end
 
-      def set_section
-        @section = @course.sections.find(params[:id])
+        cache_key = CacheKey.key(resource: "sections", id: params[:id])
+        section_json = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
+          SectionSerializer.new(section, include: [:'lessons.topics']).serializable_hash
+        end
+
+        render json: section_json
       end
     end
   end

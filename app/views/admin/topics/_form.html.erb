@@ -1,4 +1,16 @@
 <%= form_with(model: [:admin, @topic], local: true) do |form| %>
+
+  <% if @topic.errors.any? %>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+      <h4>Errors prevented this topic from saving:</h4>
+      <ul>
+        <% @topic.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <div class="space-y-4">
     <div>
       <%= form.label :title %>

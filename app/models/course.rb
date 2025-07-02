@@ -30,6 +30,17 @@ class Course < ApplicationRecord
 
   # Generate slug from title if not provided
   before_create :generate_slug_if_blank
+  after_save :clear_cache
+  after_destroy :clear_cache
+  after_save_commit -> { CourseCacheJob.perform_later(self.id) }
+
+  def clear_cache
+    Rails.cache.delete(CacheKey.key(resource: "courses", slug: self.slug))
+
+    self.sections.find_each do |section|
+      Rails.cache.delete(CacheKey.key(resource: "sections", id: section.id))
+    end
+  end 
 
   def self.search(query)
     where("title ILIKE :query OR description ILIKE :query", query: "%#{query}%")

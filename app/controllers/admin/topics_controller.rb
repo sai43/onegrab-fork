@@ -20,7 +20,7 @@ module Admin
 
     def show; end
 
-    def update
+    def update      
       if @topic.update(topic_params)
         redirect_to admin_course_path(@lesson.section.course), notice: "Topic updated."
       else

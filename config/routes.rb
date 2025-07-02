@@ -93,14 +93,6 @@ Rails.application.routes.draw do
   namespace :admin do
     get 'dashboard', to: 'dashboard#index', as: :dashboard
 
-    # resources :courses, shallow: true do
-    #   resources :sections, shallow: true do
-    #     resources :lessons, shallow: true do
-    #       resources :topics
-    #     end
-    #   end
-    # end
-
     resources :courses, shallow: true do
       resources :sections
     end
