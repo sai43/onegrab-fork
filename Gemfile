@@ -81,3 +81,4 @@ gem "chartkick"
 gem "groupdate"
 gem "redcarpet"
 gem 'reverse_markdown'
+gem 'redis'

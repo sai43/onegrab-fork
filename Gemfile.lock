@@ -325,6 +325,10 @@ GEM
       erb
       psych (>= 4.0.0)
     redcarpet (3.6.1)
+    redis (5.4.0)
+      redis-client (>= 0.22.0)
+    redis-client (0.25.0)
+      connection_pool
     regexp_parser (2.10.0)
     reline (0.6.1)
       io-console (~> 0.5)
@@ -505,6 +509,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 8.0.2)
   redcarpet
+  redis
   reverse_markdown
   rspec-rails
   rubocop-rails-omakase
