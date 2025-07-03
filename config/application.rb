@@ -24,15 +24,5 @@ module Onegrab
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
     config.autoload_paths << Rails.root.join("lib")
-
-    # Redis cache store with namespace
-    if ENV["DISABLE_REDIS_DURING_ASSETS"]
-      config.cache_store = :null_store
-    else
-      config.cache_store = :redis_cache_store, {
-        url: ENV.fetch("UPSTASH_REDIS_URL") { "redis://localhost:6379/1" },
-        namespace: "cache"
-      }
-    end
   end
 end

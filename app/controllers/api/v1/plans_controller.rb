@@ -4,7 +4,9 @@ module Api
       skip_before_action :authenticate_user!
 
       def index
-        plans = Plan.active
+        plans = Rails.cache.fetch("active_plans", expires_in: 24.hours.to_i) do
+          Plan.active.to_a
+        end
         render json: plans, each_serializer: PlanSerializer
       end
     end

@@ -17,17 +17,16 @@ module Api
           return
         end
 
-        if stale?(course)
-          cache_key = CacheKey.key(resource: "courses", slug: params[:id])
+        cache_key = CacheKey.key(resource: "courses", slug: params[:id])
 
-          course_json = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
-            CourseSerializer.new(course, include: [:sections]).serializable_hash
-          end
-
-          render json: course_json
+        course_json = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
+          Rails.logger.info("⛳ Caching course data for key: #{cache_key}")
+          CourseSerializer.new(course, include: [:sections]).serializable_hash
         end
+
+        render json: course_json
       end
-      
+
       def section_details
         section = Section.includes(lessons: :topics).find(params[:section_id])
         course = section.course

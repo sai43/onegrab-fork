@@ -35,6 +35,9 @@ class Plan < ApplicationRecord
   scope :yearly, -> { where(interval: :yearly) }
   scope :active, -> { where(active: true) }
 
+  after_save :clear_cache
+  after_destroy :clear_cache
+
   def to_s
     name
   end
@@ -48,4 +51,8 @@ class Plan < ApplicationRecord
   def set_default_interval
     self.interval ||= :monthly
   end
+
+  def clear_cache
+    Rails.cache.delete('active_plans')
+  end 
 end

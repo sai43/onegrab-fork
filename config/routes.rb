@@ -87,7 +87,7 @@ Rails.application.routes.draw do
   resources :enquiries, only: [:index, :show]
   resources :students
   get "/up", to: "health#up"
-
+  get "/redis_up", to: "health#redis_up"
 
   #Admin namespace
   namespace :admin do
