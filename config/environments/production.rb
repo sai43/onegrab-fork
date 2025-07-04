@@ -50,7 +50,7 @@ Rails.application.configure do
   # config.cache_store = :solid_cache_store
 
   config.cache_store = :redis_cache_store, {
-    url: ENV.fetch("UPSTASH_REDIS_URL"),
+    url: ENV.fetch("REDIS_URL"),
     namespace: "cache",
     ssl: true
   }

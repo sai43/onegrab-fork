@@ -2,7 +2,7 @@ require 'redis'
 require 'uri'
 
 # Fetch URL from env or fallback
-redis_url = ENV.fetch("UPSTASH_REDIS_URL") { "redis://localhost:6379/1" }
+redis_url = ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" }
 
 # Parse the URL to check for scheme
 uri = URI.parse(redis_url)
