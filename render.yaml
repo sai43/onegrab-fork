@@ -10,6 +10,11 @@ services:
         fromDatabase:
           name: onegrab-db
           property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: onegrab-redis
+          property: connectionString
       - key: RAILS_MASTER_KEY
         sync: false
       - key: WEB_CONCURRENCY
@@ -18,3 +23,9 @@ services:
 databases:
   - name: onegrab-db
     plan: free
+
+services:
+  - type: redis
+    name: onegrab-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lfu
