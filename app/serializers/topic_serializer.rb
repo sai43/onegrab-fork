@@ -5,29 +5,12 @@ class TopicSerializer
 
   attributes :id, :title, :video_url, :position, :slug
 
-  attribute :content do |topic|
-    body = topic.content.to_plain_text
-
-    if body.present?
-      if body.strip.start_with?('<')
-        # Convert HTML to Markdown
-        ReverseMarkdown.convert(body)
-      else
-        body # Already Markdown
-      end
-    end
+  attribute :content do |topic|    
+    ReverseMarkdown.convert(topic.content.body&.to_html)
   end
 
   attribute :notes do |topic|
-    body = topic.notes.to_plain_text
-
-    if body.present?
-      if body.strip.start_with?('<')
-        ReverseMarkdown.convert(body)
-      else
-        body
-      end
-    end
+    topic.notes.present? ? ReverseMarkdown.convert(topic.notes.body.to_html) : nil
   end
 
   belongs_to :lesson, serializer: LessonSerializer

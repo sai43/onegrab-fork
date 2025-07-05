@@ -14,9 +14,14 @@ module Api
 
         cache_key = CacheKey.key(resource: "sections", id: params[:id])
 
-        section_json = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
-          Rails.logger.info("⛳ Fetching and caching section data for key: #{cache_key}")
-          SectionSerializer.new(section, include: [:'lessons.topics']).serializable_hash
+        if params[:nocache].present? && params[:nocache].to_s == "true"
+          Rails.logger.info("🚫 Skipping cache and fetching fresh data for section #{params[:id]}")
+          section_json = SectionSerializer.new(section, include: [:'lessons.topics']).serializable_hash
+        else
+          section_json = Rails.cache.fetch(cache_key, expires_in: 10.minutes) do
+            Rails.logger.info("⛳ Fetching and caching section data for key: #{cache_key}")
+            SectionSerializer.new(section, include: [:'lessons.topics']).serializable_hash
+          end
         end
 
         render json: section_json
